@@ -19,9 +19,9 @@ def authenticate(view : Callable) -> Callable:
     
 @authenticate
 def get_projects(g, request : HttpRequest) -> JsonResponse:
-    repos = g.get_user().get_repos()
+    repos = g.get_user().get_repos(visibility='public')
 
     #convert the PaginatedList of repos to a list
-    repo_list = [repo for repo in repos]
+    repo_list = [repo for repo in repos if not repo.fork]
     serializer = ProjectSerializer(repo_list, many=True)
     return JsonResponse(serializer.data, safe=False)
